@@ -57,6 +57,14 @@ struct MainView: View {
                 ExportButton()
                     .help("Export the privacy manifest file")
             }
+            ToolbarItem(placement: .navigation) {
+                Link(destination: appModel.selectedSidebarItem?.url ?? .Docs.userPrivacyAndDataUse) {
+                    Image(systemName: appModel.selectedSidebarItem?.icon ?? "lock.shield.fill")
+                        .imageScale(.large)
+                        .fontWeight(.medium)
+                        .foregroundColor(Color.accentColor)
+                }
+            }
         }
         .alert(
             appModel.error?.localizedDescription ?? "Error: Something went wrong.",

@@ -37,13 +37,13 @@ import SwiftUI
 
     var dataTypes: [String: CollectedDataType] {
         didSet {
-            validate()
+            assemblePrivacyManifest()
         }
     }
 
     var apiReasons: [String: [String]] {
         didSet {
-            validate()
+            assemblePrivacyManifest()
         }
     }
 
@@ -114,8 +114,8 @@ import SwiftUI
         }
     }
 
-    func assembledPrivacyManifest() -> PrivacyManifest {
-        PrivacyManifest(
+    private func assemblePrivacyManifest() {
+        privacyManifest = PrivacyManifest(
             privacyTracking: privacyManifest.privacyTracking,
             trackingDomains: privacyManifest.trackingDomains,
             collectedDataTypes: Array(dataTypes.values),
@@ -126,11 +126,10 @@ import SwiftUI
     }
 
     func manifestAsPlistText() -> String {
-        let assembledManifest = assembledPrivacyManifest()
         do {
             let encoder = PropertyListEncoder()
             encoder.outputFormat = .xml
-            let data = try encoder.encode(assembledManifest)
+            let data = try encoder.encode(privacyManifest)
             let string = String(data: data, encoding: .utf8)
             return string ?? "Failed to encode property list."
         } catch {
@@ -146,8 +145,7 @@ import SwiftUI
     }
 
     func makeDocument() -> PrivacyManifestDocument {
-        let assembledManifest = assembledPrivacyManifest()
-        return PrivacyManifestDocument(assembledManifest)
+        return PrivacyManifestDocument(privacyManifest)
     }
 
     func showError(_ error: Swift.Error) {
@@ -155,7 +153,23 @@ import SwiftUI
         self.isShowingError = true
     }
 
-    func summarizeDataCollectionCategories(_ manifest: PrivacyManifest) -> SummarizedCategories {
+    var summarizeRequiredReasonsAPIs: [(name: String, icon: String)] {
+        return privacyManifest.accessedAPITypes.compactMap {
+            switch $0.type {
+            case ActiveKeyboardAPIs.key: return (name: ActiveKeyboardAPIs.name, icon: ActiveKeyboardAPIs.icon)
+            case DiskSpaceAPIs.key: return (name: DiskSpaceAPIs.name, icon: DiskSpaceAPIs.icon)
+            case FileTimestampAPIs.key: return (name: FileTimestampAPIs.name, icon: FileTimestampAPIs.icon)
+            case SystemBootTimeAPIs.key: return (name: SystemBootTimeAPIs.name, icon: SystemBootTimeAPIs.icon)
+            case UserDefaultsAPIs.key: return (name: UserDefaultsAPIs.name, icon: UserDefaultsAPIs.icon)
+            default:
+                return nil
+            }
+        }.sorted { a, b in
+            a.name < b.name
+        }
+    }
+
+    var summarizeDataCollectionCategories: SummarizedCategories {
         var tracking = Set<CollectionCategory>()
         var linked = Set<CollectionCategory>()
         var notLinked = Set<CollectionCategory>()
@@ -171,7 +185,7 @@ import SwiftUI
             }
         }
 
-        for dataType in manifest.collectedDataTypes {
+        for dataType in privacyManifest.collectedDataTypes {
             if BodyCategory.contains(dataType) { insertCategory(.body, for: dataType) }
             if BrowsingHistoryCategory.contains(dataType) { insertCategory(.browsingHistory, for: dataType) }
             if ContactInfoCategory.contains(dataType) { insertCategory(.contactInfo, for: dataType) }

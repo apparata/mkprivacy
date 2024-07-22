@@ -6,6 +6,7 @@ protocol RequiredReasonsAPI {
 
     static var name: String { get }
     static var key: String { get }
+    static var icon: String { get }
     static var url: URL { get }
 }
 

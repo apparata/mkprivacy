@@ -6,7 +6,9 @@ struct SystemBootTimeAPIs: RequiredReasonsAPI {
 
     static let key = "NSPrivacyAccessedAPICategorySystemBootTime"
 
-    static let url = URL.Docs.fileTimestampAPIs
+    static let icon = "timer.circle.fill"
+
+    static let url = URL.Docs.systemBootTimeAPIs
 
     enum Reasons: String, RequiredReason {
 

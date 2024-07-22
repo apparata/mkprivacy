@@ -6,6 +6,8 @@ struct DiskSpaceAPIs: RequiredReasonsAPI {
 
     static let key = "NSPrivacyAccessedAPICategoryDiskSpace"
 
+    static let icon = "internaldrive.fill"
+
     static let url = URL.Docs.diskSpaceAPIs
 
     enum Reasons: String, RequiredReason {

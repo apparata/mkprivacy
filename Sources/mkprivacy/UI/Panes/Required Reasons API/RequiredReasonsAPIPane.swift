@@ -9,39 +9,39 @@ struct RequiredReasonsAPIPane: View {
         HSplitView() {
             List(selection: $appModel.selectedRequiredReasonsAPI) {
                 Section("API Type") {
-                    Text(UserDefaultsAPIs.name)
-                        .badge(appModel.apiReasons[UserDefaultsAPIs.key]?.count ?? 0)
-                        .tag(UserDefaultsAPIs.key)
-                    Text(FileTimestampAPIs.name)
-                        .badge(appModel.apiReasons[FileTimestampAPIs.key]?.count ?? 0)
-                        .tag(FileTimestampAPIs.key)
-                    Text(DiskSpaceAPIs.name)
-                        .badge(appModel.apiReasons[DiskSpaceAPIs.key]?.count ?? 0)
-                        .tag(DiskSpaceAPIs.key)
-                    Text(SystemBootTimeAPIs.name)
-                        .badge(appModel.apiReasons[SystemBootTimeAPIs.key]?.count ?? 0)
-                        .tag(SystemBootTimeAPIs.key)
-                    Text(ActiveKeyboardAPIs.name)
+                    Label(ActiveKeyboardAPIs.name, systemImage: ActiveKeyboardAPIs.icon)
                         .badge(appModel.apiReasons[ActiveKeyboardAPIs.key]?.count ?? 0)
                         .tag(ActiveKeyboardAPIs.key)
+                    Label(DiskSpaceAPIs.name, systemImage: DiskSpaceAPIs.icon)
+                        .badge(appModel.apiReasons[DiskSpaceAPIs.key]?.count ?? 0)
+                        .tag(DiskSpaceAPIs.key)
+                    Label(FileTimestampAPIs.name, systemImage: FileTimestampAPIs.icon)
+                        .badge(appModel.apiReasons[FileTimestampAPIs.key]?.count ?? 0)
+                        .tag(FileTimestampAPIs.key)
+                    Label(SystemBootTimeAPIs.name, systemImage: SystemBootTimeAPIs.icon)
+                        .badge(appModel.apiReasons[SystemBootTimeAPIs.key]?.count ?? 0)
+                        .tag(SystemBootTimeAPIs.key)
+                    Label(UserDefaultsAPIs.name, systemImage: UserDefaultsAPIs.icon)
+                        .badge(appModel.apiReasons[UserDefaultsAPIs.key]?.count ?? 0)
+                        .tag(UserDefaultsAPIs.key)
                 }
             }
             .listStyle(.sidebar)
             .scrollContentBackground(.hidden)
-            .frame(width: 180)
+            .frame(width: 196)
             .frame(maxHeight: .infinity)
             VStack {
                 switch appModel.selectedRequiredReasonsAPI {
-                case UserDefaultsAPIs.key:
-                    RequiredReasonsSelector<UserDefaultsAPIs>()
-                case FileTimestampAPIs.key:
-                    RequiredReasonsSelector<FileTimestampAPIs>()
-                case DiskSpaceAPIs.key:
-                    RequiredReasonsSelector<DiskSpaceAPIs>()
-                case SystemBootTimeAPIs.key:
-                    RequiredReasonsSelector<SystemBootTimeAPIs>()
                 case ActiveKeyboardAPIs.key:
                     RequiredReasonsSelector<ActiveKeyboardAPIs>()
+                case DiskSpaceAPIs.key:
+                    RequiredReasonsSelector<DiskSpaceAPIs>()
+                case FileTimestampAPIs.key:
+                    RequiredReasonsSelector<FileTimestampAPIs>()
+                case SystemBootTimeAPIs.key:
+                    RequiredReasonsSelector<SystemBootTimeAPIs>()
+                case UserDefaultsAPIs.key:
+                    RequiredReasonsSelector<UserDefaultsAPIs>()
                 default:
                     ContentUnavailableView {
                         Label("No APIs selected", systemImage: "function")
@@ -64,7 +64,7 @@ struct RequiredReasonsSelector<T: RequiredReasonsAPI>: View {
         ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Text("\(T.name) APIs")
+                    Label("\(T.name) APIs", systemImage: T.icon)
                         .font(.title2)
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -93,6 +93,9 @@ struct RequiredReasonsSelector<T: RequiredReasonsAPI>: View {
                                         appModel.apiReasons[T.key]?.removeAll(where: { reasonID in
                                             reasonID == reason.id
                                         })
+                                        if appModel.apiReasons[T.key]?.isEmpty ?? false {
+                                            appModel.apiReasons.removeValue(forKey: T.key)
+                                        }
                                     }
                                 }
                             }

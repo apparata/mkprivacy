@@ -104,39 +104,40 @@ struct CollectionCategorySelector: View {
 
     var body: some View {
         let title = category.description
+        let icon = category.icon
         switch category {
         case .contactInfo:
-            CollectedDataTypeEntry<ContactInfoCategory>(title: title)
+            CollectedDataTypeEntry<ContactInfoCategory>(title: title, icon: icon)
         case .healthAndFitness:
-            CollectedDataTypeEntry<HealthAndFitnessCategory>(title: title)
+            CollectedDataTypeEntry<HealthAndFitnessCategory>(title: title, icon: icon)
         case .financialInfo:
-            CollectedDataTypeEntry<FinancialInfoCategory>(title: title)
+            CollectedDataTypeEntry<FinancialInfoCategory>(title: title, icon: icon)
         case .locationInfo:
-            CollectedDataTypeEntry<LocationInfoCategory>(title: title)
+            CollectedDataTypeEntry<LocationInfoCategory>(title: title, icon: icon)
         case .sensitiveInfo:
-            CollectedDataTypeEntry<SensitiveInfoCategory>(title: title)
+            CollectedDataTypeEntry<SensitiveInfoCategory>(title: title, icon: icon)
         case .contactsInfo:
-            CollectedDataTypeEntry<ContactsInfoCategory>(title: title)
+            CollectedDataTypeEntry<ContactsInfoCategory>(title: title, icon: icon)
         case .userContent:
-            CollectedDataTypeEntry<UserContentCategory>(title: title)
+            CollectedDataTypeEntry<UserContentCategory>(title: title, icon: icon)
         case .browsingHistory:
-            CollectedDataTypeEntry<BrowsingHistoryCategory>(title: title)
+            CollectedDataTypeEntry<BrowsingHistoryCategory>(title: title, icon: icon)
         case .searchHistory:
-            CollectedDataTypeEntry<SearchHistoryCategory>(title: title)
+            CollectedDataTypeEntry<SearchHistoryCategory>(title: title, icon: icon)
         case .identifiers:
-            CollectedDataTypeEntry<IdentifiersCategory>(title: title)
+            CollectedDataTypeEntry<IdentifiersCategory>(title: title, icon: icon)
         case .purchases:
-            CollectedDataTypeEntry<PurchasesCategory>(title: title)
+            CollectedDataTypeEntry<PurchasesCategory>(title: title, icon: icon)
         case .usageData:
-            CollectedDataTypeEntry<UsageDataCategory>(title: title)
+            CollectedDataTypeEntry<UsageDataCategory>(title: title, icon: icon)
         case .diagnostics:
-            CollectedDataTypeEntry<DiagnosticsCategory>(title: title)
+            CollectedDataTypeEntry<DiagnosticsCategory>(title: title, icon: icon)
         case .surroundings:
-            CollectedDataTypeEntry<SurroundingsCategory>(title: title)
+            CollectedDataTypeEntry<SurroundingsCategory>(title: title, icon: icon)
         case .body:
-            CollectedDataTypeEntry<BodyCategory>(title: title)
+            CollectedDataTypeEntry<BodyCategory>(title: title, icon: icon)
         case .otherDataTypes:
-            CollectedDataTypeEntry<OtherDataTypesCategory>(title: title)
+            CollectedDataTypeEntry<OtherDataTypesCategory>(title: title, icon: icon)
         }
     }
 }
@@ -147,12 +148,14 @@ struct CollectedDataTypeEntry<T: CollectedCategory>: View {
 
     let title: String
 
+    let icon: String
+
     var body: some View {
         @Bindable var appModel = appModel
         ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Text("\(title)")
+                    Label(title, systemImage: icon)
                         .font(.title2)
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)

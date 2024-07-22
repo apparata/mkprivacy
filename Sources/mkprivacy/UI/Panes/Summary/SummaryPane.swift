@@ -5,8 +5,8 @@ struct SummaryPane: View {
     @Environment(AppModel.self) private var appModel
 
     var body: some View {
-        let assembledManifest = appModel.assembledPrivacyManifest()
-        let summarizedCategories = appModel.summarizeDataCollectionCategories(assembledManifest)
+        let summarizedCategories = appModel.summarizeDataCollectionCategories
+        let summarizedRequiredReasonsAPIs = appModel.summarizeRequiredReasonsAPIs
         ScrollView(.vertical) {
             VStack(alignment: .leading, spacing: 0) {
                 Text("Summary")
@@ -16,9 +16,10 @@ struct SummaryPane: View {
                     .padding(.bottom, 16)
 
                 warnings()
-                privacyTracking(assembledManifest)
-                trackingDomains(assembledManifest)
-                dataCollection(assembledManifest, summarizedCategories)
+                privacyTracking(appModel.privacyManifest)
+                trackingDomains(appModel.privacyManifest)
+                dataCollection(appModel.privacyManifest, summarizedCategories)
+                requiredReasonsAPIs(appModel.privacyManifest, summarizedRequiredReasonsAPIs)
             }
             .padding()
             .padding()
@@ -111,7 +112,7 @@ struct SummaryPane: View {
         _ summarizedCategories: SummarizedCategories
     ) -> some View {
 
-        VStack(spacing: 16) {
+        VStack(spacing: 0) {
 
             if !summarizedCategories.tracking.isEmpty {
                 VStack(spacing: 0) {
@@ -146,6 +147,7 @@ struct SummaryPane: View {
                 .padding(.horizontal, 40)
                 .background(.quinary)
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
+                .padding(.bottom, 16)
             }
 
             if !summarizedCategories.linked.isEmpty {
@@ -181,6 +183,7 @@ struct SummaryPane: View {
                 .padding(.horizontal, 40)
                 .background(.quinary)
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
+                .padding(.bottom, 16)
             }
 
             if !summarizedCategories.notLinked.isEmpty {
@@ -216,6 +219,7 @@ struct SummaryPane: View {
                 .padding(.horizontal, 40)
                 .background(.quinary)
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
+                .padding(.bottom, 16)
             }
         }
     }
@@ -225,6 +229,47 @@ struct SummaryPane: View {
         case 1: [GridItem(alignment: .center)]
         case 2: [GridItem(alignment: .center), GridItem(alignment: .center)]
         default: [GridItem(alignment: .leading), GridItem(alignment: .leading), GridItem(alignment: .leading)]
+        }
+    }
+
+    @ViewBuilder func requiredReasonsAPIs(
+        _ manifest: PrivacyManifest,
+        _ summarizedAPIs: [(name: String, icon: String)]
+    ) -> some View {
+        let count = summarizedAPIs.count
+        if count > 0 {
+            VStack(spacing: 0) {
+                Image(systemName: "function")
+                    .foregroundStyle(Color.accentColor)
+                    .imageScale(.large)
+                    .font(.title)
+                    .fontWeight(.medium)
+                    .padding(.bottom, 6)
+                Text("Required Reasons APIs Usage")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .padding(.bottom, 8)
+                Text("The following required reasons APIs are used by the app or SDK:")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .padding(.bottom, 12)
+                LazyVGrid(columns: columns(itemCount: count)) {
+                    ForEach(summarizedAPIs, id: \.name) { apiType in
+                        HStack(spacing: 6) {
+                            VStack {
+                                Image(systemName: apiType.icon)
+                            }.frame(width: 20)
+                            Text(apiType.name)
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .padding(.horizontal, 40)
+            .background(.quinary)
+            .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
         }
     }
 }

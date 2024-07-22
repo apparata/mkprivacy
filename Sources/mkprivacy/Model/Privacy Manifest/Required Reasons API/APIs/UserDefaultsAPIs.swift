@@ -9,6 +9,8 @@ struct UserDefaultsAPIs: RequiredReasonsAPI {
 
     static let key = "NSPrivacyAccessedAPICategoryUserDefaults"
 
+    static let icon = "gearshape.2.fill"
+
     static let url = URL.Docs.userDefaultsAPIs
 
     enum Reasons: String, RequiredReason {

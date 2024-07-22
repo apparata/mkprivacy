@@ -43,6 +43,17 @@ enum SidebarItem: Identifiable, Hashable, CustomStringConvertible {
         case .manifestFile: "doc.text"
         }
     }
+
+    var url: URL {
+        switch self {
+        case .privacyTracking: .Docs.createAPrivacyManifest
+        case .trackingDomains: .Docs.createAPrivacyManifest
+        case .collectedDataTypes: .Docs.describingDataUseInPrivacyManifests
+        case .requiredReasonsAPIs: .Docs.describingUseOfRequiredReasonAPI
+        case .summary: .Docs.userPrivacyAndDataUse
+        case .manifestFile: .Docs.addingAPrivacyManifestToYourAppOrThirdPartySDK
+        }
+    }
 }
 
 struct SidebarListItem: View {

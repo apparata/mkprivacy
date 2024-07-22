@@ -6,6 +6,8 @@ struct FileTimestampAPIs: RequiredReasonsAPI {
     
     static let key = "NSPrivacyAccessedAPICategoryFileTimestamp"
 
+    static let icon = "doc.badge.clock.fill"
+
     static let url = URL.Docs.fileTimestampAPIs
 
     enum Reasons: String, RequiredReason {

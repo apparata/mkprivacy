@@ -6,6 +6,8 @@ struct ActiveKeyboardAPIs: RequiredReasonsAPI {
 
     static let key = "NSPrivacyAccessedAPICategoryActiveKeyboards"
 
+    static let icon = "keyboard.fill"
+
     static let url = URL.Docs.activeKeyboardAPIs
 
     enum Reasons: String, RequiredReason {
