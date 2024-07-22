@@ -1,9 +1,19 @@
 
 # mkprivacy
 
+The `mkprivacy` app is a tool for creating Apple privacy manifest files, typically named `PrivacyInfo.xcprivacy`. The tool is a macOS UI app that you start from the command line. 
+
 ## License
 
 See the LICENSE file for licensing information.
+
+## Using `mkprivacy`
+
+The easiest way to install and run `mkprivacy` is by using the `mint` package mangager:
+
+```bash
+$ mint run apparata/mkprivacy
+```
 
 ![screenshot-datatypes](https://github.com/user-attachments/assets/9aed5afa-8f93-4a72-ad6a-1a31e12e5a20)
 
