@@ -23,7 +23,7 @@ struct TrackingDomainsPane: View {
                                 .contentShape(Rectangle())
                                 .onSubmit {
                                     if entry.domain.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                        deleteEntry(entry)
+                                        domainFocus = nil
                                     } else {
                                         withAnimation {
                                             addEntry()
@@ -32,6 +32,13 @@ struct TrackingDomainsPane: View {
                                 }
                                 .onTapGesture {
                                     domainFocus = entry.id
+                                }
+                                .onChange(of: domainFocus) { previousFocusID, focusID in
+                                    if entry.id == previousFocusID, entry.id != focusID {
+                                        if entry.domain.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                            deleteEntry(entry)
+                                        }
+                                    }
                                 }
                             Button {
                                 deleteEntry(entry)
@@ -87,7 +94,7 @@ struct TrackingDomainsPane: View {
     private func deleteEntry(_ entry: TrackingDomain) {
         domainFocus = nil
         Task {
-            try? await Task.sleep(for: .milliseconds(200))
+            try? await Task.sleep(for: .milliseconds(300))
             if let index = appModel
                 .privacyManifest
                 .trackingDomains

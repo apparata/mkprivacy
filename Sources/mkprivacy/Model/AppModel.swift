@@ -14,14 +14,47 @@ import SwiftUI
     var isShowingError: Bool = false
     var error: Error?
 
-    var privacyManifest = PrivacyManifest()
+    var warningTrackingButNoTrackingDatatypes: Bool = false
+    var warningNotTrackingButTrackingDataTypes: Bool = false
+    var warningNotTrackingButTrackingDomains: Bool = false
 
-    var dataTypes: [String: CollectedDataType]
-    var apiReasons: [String: [String]]
+    var privacyManifest = PrivacyManifest() {
+        didSet {
+            validate()
+        }
+    }
+
+    var dataTypes: [String: CollectedDataType] {
+        didSet {
+            validate()
+        }
+    }
+
+    var apiReasons: [String: [String]] {
+        didSet {
+            validate()
+        }
+    }
 
     init() {
         dataTypes = [:]
         apiReasons = [:]
+    }
+
+    func validate() {
+        warningTrackingButNoTrackingDatatypes = false
+        warningNotTrackingButTrackingDataTypes = false
+        warningNotTrackingButTrackingDomains = false
+
+        if privacyManifest.privacyTracking, dataTypes.filter({ $0.value.isTracking }).isEmpty {
+            warningTrackingButNoTrackingDatatypes = true
+        } else if !privacyManifest.privacyTracking, !dataTypes.filter({ $0.value.isTracking }).isEmpty {
+            warningNotTrackingButTrackingDataTypes = true
+        }
+
+        if !privacyManifest.privacyTracking, !privacyManifest.trackingDomains.isEmpty {
+            warningNotTrackingButTrackingDomains = true
+        }
     }
 
     func clearPrivacyManifest() {
@@ -56,6 +89,8 @@ import SwiftUI
             privacyManifest = manifest
             self.dataTypes = dataTypes
             self.apiReasons = apiReasons
+
+            selectedSidebarItem = .summary
         }
     }
 

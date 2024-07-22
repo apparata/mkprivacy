@@ -51,27 +51,51 @@ struct SidebarListItem: View {
 
     @Environment(AppModel.self) private var appModel
 
+    @Environment(\.colorScheme) private var colorScheme
+
     init(_ item: SidebarItem) {
         self.item = item
     }
 
     var body: some View {
         Label(item.description, systemImage: item.icon)
-            .badge(badge(for: item))
+            .badge(stringBadge(for: item))
+            .badge(numericBadge(for: item))
             .tag(item)
     }
 
-    private func badge(for item: SidebarItem) -> Int {
+    private func stringBadge(for item: SidebarItem) -> Text? {
+        let manifest = appModel.privacyManifest
+        switch item {
+        case .privacyTracking:
+            let showWarning = appModel.warningTrackingButNoTrackingDatatypes
+                || appModel.warningNotTrackingButTrackingDataTypes
+                || appModel.warningNotTrackingButTrackingDomains
+            if showWarning {
+                return 
+                    Text("\(Image(systemName: "exclamationmark.triangle.fill"))")
+                        .foregroundColor(colorScheme == .light ? .yellow : .yellow)
+                        .bold()
+                    + Text(" \(manifest.privacyTracking ? "Yes" : "No")")
+            } else {
+                return Text(manifest.privacyTracking ? "Yes" : "No")
+            }
+        default: return nil
+        }
+    }
+
+    private func numericBadge(for item: SidebarItem) -> Int {
         let manifest = appModel.privacyManifest
         return switch item {
-        case .privacyTracking: manifest.privacyTracking ? 1 : 0
-        case .trackingDomains: manifest.trackingDomains.count
-        case .collectedDataTypes: appModel.dataTypes.count
-        case .requiredReasonsAPIs: appModel.apiReasons
+        case .trackingDomains:
+            manifest.trackingDomains.count
+        case .collectedDataTypes:
+            appModel.dataTypes.count
+        case .requiredReasonsAPIs:
+            appModel.apiReasons
                 .map { _, reasons in reasons.count }
                 .reduce(0, +)
-        case .summary: 0
-        case .manifestFile: 0
+        default: 0
         }
     }
 }

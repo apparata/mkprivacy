@@ -189,7 +189,7 @@ struct CollectedDataTypeEntry<T: CollectedCategory>: View {
                         ) {
                             Text("\(dataType.title)")
                                 .font(.headline)
-                                .bold()
+                                .fontWeight(.medium)
                         }
 
                         Text(dataType.description)
