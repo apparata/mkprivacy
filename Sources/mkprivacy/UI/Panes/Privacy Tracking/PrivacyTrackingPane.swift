@@ -20,13 +20,13 @@ struct PrivacyTrackingPane: View {
                 .foregroundColor(.secondary)
                 .padding(.bottom)
             if appModel.warningTrackingButNoTrackingDatatypes {
-                Warning("No collected data types have been marked for use with tracking yet.")
+                Warning("No collected data types have been marked for use with tracking yet.", goTo: .collectedDataTypes)
             }
             if appModel.warningNotTrackingButTrackingDataTypes {
-                Warning("Some collected data types have been marked for use with tracking.")
+                Warning("Some collected data types have been marked for use with tracking.", goTo: .collectedDataTypes)
             }
             if appModel.warningNotTrackingButTrackingDomains {
-                Warning("Tracking domains have been added, without tracking enabled.")
+                Warning("Tracking domains have been added, without tracking enabled.", goTo: .trackingDomains)
             }
             Spacer()
         }

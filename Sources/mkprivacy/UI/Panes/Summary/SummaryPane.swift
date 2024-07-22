@@ -16,20 +16,25 @@ struct SummaryPane: View {
                     .padding(.bottom, 16)
 
                 if appModel.warningTrackingButNoTrackingDatatypes {
-                    Warning("No collected data types have been marked for use with tracking yet.")
+                    Warning("No collected data types have been marked for use with tracking yet.", goTo: .collectedDataTypes)
                         .padding(.bottom, 16)
                 }
                 if appModel.warningNotTrackingButTrackingDataTypes {
-                    Warning("Some collected data types have been marked for use with tracking.")
+                    Warning("Some collected data types have been marked for use with tracking.", goTo: .collectedDataTypes)
                         .padding(.bottom, 16)
                 }
                 if appModel.warningNotTrackingButTrackingDomains {
-                    Warning("Tracking domains have been added, without tracking enabled.")
+                    Warning("Tracking domains have been added, without tracking enabled.", goTo: .trackingDomains)
                         .padding(.bottom, 16)
                 }
                 if appModel.warningDataTypePurposeRequired {
-                    Warning("No purpose selected for at least one collected data type.")
-                        .padding(.bottom, 16)
+                    if appModel.warningDataTypePurposeRequiredCount > 0 {
+                        Warning("No purpose selected for \(appModel.warningDataTypePurposeRequiredCount) collected data types.", goTo: .collectedDataTypes)
+                            .padding(.bottom, 16)
+                    } else {
+                        Warning("No purpose selected for a collected data type.", goTo: .collectedDataTypes)
+                            .padding(.bottom, 16)
+                    }
                 }
 
                 VStack {

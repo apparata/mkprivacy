@@ -48,8 +48,10 @@ struct MainView: View {
                         appModel.selectedSidebarItem = .summary
                     } label: {
                         Image(systemName: "exclamationmark.triangle.fill")
+                            .imageScale(.large)
                             .foregroundColor(Color.yellow)
                     }
+                    .buttonStyle(.plain)
                     .help("Show summary of warnings")
                 }
                 ExportButton()

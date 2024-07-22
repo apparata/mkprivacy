@@ -91,6 +91,10 @@ struct SidebarListItem: View {
             } else {
                 return count > 0 ? Text("\(appModel.dataTypes.count)") : nil
             }
+        case .summary where appModel.isWarningActive:
+            return Text("\(Image(systemName: "exclamationmark.triangle.fill"))")
+                .foregroundColor(colorScheme == .light ? .yellow : .yellow)
+                .bold()
         default: return nil
         }
     }
