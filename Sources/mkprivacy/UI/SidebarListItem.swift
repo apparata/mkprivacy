@@ -80,6 +80,17 @@ struct SidebarListItem: View {
             } else {
                 return Text(manifest.privacyTracking ? "Yes" : "No")
             }
+        case .collectedDataTypes:
+            let count = appModel.dataTypes.count
+            if appModel.warningDataTypePurposeRequired {
+                return
+                    Text("\(Image(systemName: "exclamationmark.triangle.fill"))")
+                        .foregroundColor(colorScheme == .light ? .yellow : .yellow)
+                        .bold()
+                    + Text(count > 0 ? " \(count)" : "")
+            } else {
+                return count > 0 ? Text("\(appModel.dataTypes.count)") : nil
+            }
         default: return nil
         }
     }
@@ -89,8 +100,6 @@ struct SidebarListItem: View {
         return switch item {
         case .trackingDomains:
             manifest.trackingDomains.count
-        case .collectedDataTypes:
-            appModel.dataTypes.count
         case .requiredReasonsAPIs:
             appModel.apiReasons
                 .map { _, reasons in reasons.count }

@@ -280,7 +280,7 @@ struct CollectedDataTypeEntry<T: CollectedCategory>: View {
 
     @ViewBuilder private func purposeBox(for dataType: T) -> some View {
         @Bindable var appModel = appModel
-        GroupBox("Purpose") {
+        GroupBox(label: purposeBoxTitle(for: dataType)) {
             Grid(alignment: .leading, verticalSpacing: 8) {
                 GridRow {
                     purposeToggle(for: .thirdPartyAdvertising, title: "3rd-party ads", dataType: dataType)
@@ -301,6 +301,14 @@ struct CollectedDataTypeEntry<T: CollectedCategory>: View {
         .padding(.bottom, 8)
     }
 
+    @ViewBuilder private func purposeBoxTitle(for dataType: T) -> some View {
+        if appModel.dataTypes[dataType.id]?.purposes.isEmpty ?? true {
+            Text("\(Image(systemName: "exclamationmark.triangle.fill")) Purpose (required)").foregroundStyle(Color.yellow)
+        } else {
+            Text("Purpose")
+        }
+    }
+
     @ViewBuilder private func purposeToggle(for purpose: CollectionPurposes, title: String, dataType: T) -> some View {
         @Bindable var appModel = appModel
         HStack(spacing: 0) {
@@ -311,25 +319,27 @@ struct CollectedDataTypeEntry<T: CollectedCategory>: View {
                             return appModel.dataTypes[dataType.id]?.purposes.contains(purpose.id) ?? false
                         }, set: { shouldInsert in
 
-                            if appModel.dataTypes[dataType.id] == nil {
-                                if shouldInsert {
-                                    appModel.dataTypes[dataType.id] = CollectedDataType(
-                                        type: dataType.id,
-                                        isLinked: false,
-                                        isTracking: false,
-                                        purposes: [purpose.id]
-                                    )
-                                }
-                            } else {
-                                if appModel.dataTypes[dataType.id]?.purposes.contains(purpose.id) ?? false {
-                                    if !shouldInsert {
-                                        appModel.dataTypes[dataType.id]?.purposes.removeAll(where: { purposeID in
-                                            purposeID == purpose.id
-                                        })
+                            withAnimation {
+                                if appModel.dataTypes[dataType.id] == nil {
+                                    if shouldInsert {
+                                        appModel.dataTypes[dataType.id] = CollectedDataType(
+                                            type: dataType.id,
+                                            isLinked: false,
+                                            isTracking: false,
+                                            purposes: [purpose.id]
+                                        )
                                     }
                                 } else {
-                                    if shouldInsert {
-                                        appModel.dataTypes[dataType.id]?.purposes.append(purpose.id)
+                                    if appModel.dataTypes[dataType.id]?.purposes.contains(purpose.id) ?? false {
+                                        if !shouldInsert {
+                                            appModel.dataTypes[dataType.id]?.purposes.removeAll(where: { purposeID in
+                                                purposeID == purpose.id
+                                            })
+                                        }
+                                    } else {
+                                        if shouldInsert {
+                                            appModel.dataTypes[dataType.id]?.purposes.append(purpose.id)
+                                        }
                                     }
                                 }
                             }

@@ -17,6 +17,7 @@ import SwiftUI
     var warningTrackingButNoTrackingDatatypes: Bool = false
     var warningNotTrackingButTrackingDataTypes: Bool = false
     var warningNotTrackingButTrackingDomains: Bool = false
+    var warningDataTypePurposeRequired: Bool = false
 
     var privacyManifest = PrivacyManifest() {
         didSet {
@@ -45,6 +46,7 @@ import SwiftUI
         warningTrackingButNoTrackingDatatypes = false
         warningNotTrackingButTrackingDataTypes = false
         warningNotTrackingButTrackingDomains = false
+        warningDataTypePurposeRequired = false
 
         if privacyManifest.privacyTracking, dataTypes.filter({ $0.value.isTracking }).isEmpty {
             warningTrackingButNoTrackingDatatypes = true
@@ -54,6 +56,12 @@ import SwiftUI
 
         if !privacyManifest.privacyTracking, !privacyManifest.trackingDomains.isEmpty {
             warningNotTrackingButTrackingDomains = true
+        }
+
+        for (_, dataType) in dataTypes {
+            if dataType.purposes.isEmpty {
+                warningDataTypePurposeRequired = true
+            }
         }
     }
 
