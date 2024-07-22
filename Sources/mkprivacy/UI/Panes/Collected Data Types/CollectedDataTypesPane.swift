@@ -355,13 +355,15 @@ struct CollectedDataTypeEntry<T: CollectedCategory>: View {
                 .padding(.leading, 4)
                 .onHover { isHovering in
                     if isHovering {
+                        appModel.hoveredPurposeDataType = dataType.id
                         appModel.hoveredPurpose = purpose
                     } else {
+                        appModel.hoveredPurposeDataType = nil
                         appModel.hoveredPurpose = nil
                     }
                 }
                 .popover(item: Binding(get: {
-                    if appModel.hoveredPurpose == purpose {
+                    if appModel.hoveredPurpose == purpose, dataType.id == appModel.hoveredPurposeDataType {
                         return purpose
                     } else {
                         return nil

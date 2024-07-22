@@ -42,7 +42,16 @@ struct MainView: View {
         .navigationTitle(appModel.selectedSidebarItem?.description ?? "Privacy Manifest")
         .navigationSubtitle(appModel.selectedSidebarItem?.subtitle ?? "Describe the data your app tracks")
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItemGroup(placement: .primaryAction) {
+                if appModel.isWarningActive {
+                    Button {
+                        appModel.selectedSidebarItem = .summary
+                    } label: {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(Color.yellow)
+                    }
+                    .help("Show summary of warnings")
+                }
                 ExportButton()
                     .help("Export the privacy manifest file")
             }

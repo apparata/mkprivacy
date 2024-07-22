@@ -15,6 +15,23 @@ struct SummaryPane: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 16)
 
+                if appModel.warningTrackingButNoTrackingDatatypes {
+                    Warning("No collected data types have been marked for use with tracking yet.")
+                        .padding(.bottom, 16)
+                }
+                if appModel.warningNotTrackingButTrackingDataTypes {
+                    Warning("Some collected data types have been marked for use with tracking.")
+                        .padding(.bottom, 16)
+                }
+                if appModel.warningNotTrackingButTrackingDomains {
+                    Warning("Tracking domains have been added, without tracking enabled.")
+                        .padding(.bottom, 16)
+                }
+                if appModel.warningDataTypePurposeRequired {
+                    Warning("No purpose selected for at least one collected data type.")
+                        .padding(.bottom, 16)
+                }
+
                 VStack {
                     if assembledManifest.privacyTracking {
                         HStack {

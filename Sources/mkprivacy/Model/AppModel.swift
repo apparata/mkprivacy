@@ -7,12 +7,21 @@ import SwiftUI
     var selectedSidebarItem: SidebarItem?
     var selectedRequiredReasonsAPI: String?
     var selectedCollectionCategory: CollectionCategory?
+
     var hoveredPurpose: CollectionPurposes?
+    var hoveredPurposeDataType: String?
 
     var windowIsAlwaysOnTop: Bool = false
 
     var isShowingError: Bool = false
     var error: Error?
+
+    var isWarningActive: Bool {
+        warningTrackingButNoTrackingDatatypes
+        || warningNotTrackingButTrackingDataTypes
+        || warningNotTrackingButTrackingDomains
+        || warningDataTypePurposeRequired
+    }
 
     var warningTrackingButNoTrackingDatatypes: Bool = false
     var warningNotTrackingButTrackingDataTypes: Bool = false
