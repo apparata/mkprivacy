@@ -15,54 +15,9 @@ struct SummaryPane: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 16)
 
-                if appModel.warningTrackingButNoTrackingDatatypes {
-                    Warning("No collected data types have been marked for use with tracking yet.", goTo: .collectedDataTypes)
-                        .padding(.bottom, 16)
-                }
-                if appModel.warningNotTrackingButTrackingDataTypes {
-                    Warning("Some collected data types have been marked for use with tracking.", goTo: .collectedDataTypes)
-                        .padding(.bottom, 16)
-                }
-                if appModel.warningNotTrackingButTrackingDomains {
-                    Warning("Tracking domains have been added, without tracking enabled.", goTo: .trackingDomains)
-                        .padding(.bottom, 16)
-                }
-                if appModel.warningDataTypePurposeRequired {
-                    if appModel.warningDataTypePurposeRequiredCount > 0 {
-                        Warning("No purpose selected for \(appModel.warningDataTypePurposeRequiredCount) collected data types.", goTo: .collectedDataTypes)
-                            .padding(.bottom, 16)
-                    } else {
-                        Warning("No purpose selected for a collected data type.", goTo: .collectedDataTypes)
-                            .padding(.bottom, 16)
-                    }
-                }
-
-                VStack {
-                    if assembledManifest.privacyTracking {
-                        HStack {
-                            Image(systemName: "person.fill.viewfinder")
-                                .imageScale(.large)
-                                .fontWeight(.medium)
-                                .foregroundStyle(Color.accentColor)
-                            Text("The app or 3rd-party SDK indicates that it does use data for tracking.")
-                        }
-                    } else {
-                        HStack {
-                            Image(systemName: "checkmark.circle")
-                                .imageScale(.large)
-                                .fontWeight(.medium)
-                                .foregroundStyle(Color.accentColor)
-                            Text("The app or 3rd-party SDK indicates that it **does not** use data for tracking.")
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 20)
-                .padding(.horizontal, 40)
-                .background(.quinary)
-                .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
-                .padding(.bottom, 16)
-
+                warnings()
+                privacyTracking(assembledManifest)
+                trackingDomains(assembledManifest)
                 dataCollection(assembledManifest, summarizedCategories)
             }
             .padding()
@@ -71,6 +26,84 @@ struct SummaryPane: View {
         }
         .scrollContentBackground(.hidden)
         .background(Color(NSColor.controlBackgroundColor))
+    }
+
+    @ViewBuilder private func warnings() -> some View {
+        if appModel.warningTrackingButNoTrackingDatatypes {
+            Warning("No collected data types have been marked for use with tracking yet.", goTo: .collectedDataTypes)
+                .padding(.bottom, 16)
+        }
+        if appModel.warningNotTrackingButTrackingDataTypes {
+            Warning("Some collected data types have been marked for use with tracking.", goTo: .collectedDataTypes)
+                .padding(.bottom, 16)
+        }
+        if appModel.warningNotTrackingButTrackingDomains {
+            Warning("Tracking domains have been added, without tracking enabled.", goTo: .trackingDomains)
+                .padding(.bottom, 16)
+        }
+        if appModel.warningDataTypePurposeRequired {
+            if appModel.warningDataTypePurposeRequiredCount > 1 {
+                Warning("No collection purpose selected for \(appModel.warningDataTypePurposeRequiredCount) collected data types.", goTo: .collectedDataTypes)
+                    .padding(.bottom, 16)
+            } else {
+                Warning("No collection purpose selected for a collected data type.", goTo: .collectedDataTypes)
+                    .padding(.bottom, 16)
+            }
+        }
+
+    }
+
+    @ViewBuilder private func privacyTracking(_ privacyManifest: PrivacyManifest) -> some View {
+        VStack {
+            if privacyManifest.privacyTracking {
+                HStack {
+                    Image(systemName: "person.fill.viewfinder")
+                        .imageScale(.large)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.accentColor)
+                    Text("The app or 3rd-party SDK indicates that it does use data for tracking.")
+                }
+            } else {
+                HStack {
+                    Image(systemName: "checkmark.circle")
+                        .imageScale(.large)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.accentColor)
+                    Text("The app or 3rd-party SDK indicates that it **does not** use data for tracking.")
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
+        .padding(.horizontal, 40)
+        .background(.quinary)
+        .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
+        .padding(.bottom, 16)
+    }
+
+    @ViewBuilder private func trackingDomains(_ privacyManifest: PrivacyManifest) -> some View {
+        let count = privacyManifest.trackingDomains.count
+        if count > 0 {
+            VStack {
+                HStack {
+                    Image(systemName: "network.badge.shield.half.filled")
+                        .imageScale(.large)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.accentColor)
+                    if count == 1 {
+                        Text("There is an Internet domain engaged in tracking.")
+                    } else {
+                        Text("There are \(String(privacyManifest.trackingDomains.count)) Internet domains engaged in tracking.")
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .padding(.horizontal, 40)
+            .background(.quinary)
+            .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
+            .padding(.bottom, 16)
+        }
     }
 
     @ViewBuilder private func dataCollection(
@@ -96,7 +129,7 @@ struct SummaryPane: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                         .padding(.bottom, 12)
-                    LazyVGrid(columns: [GridItem(alignment: .leading), GridItem(alignment: .leading), GridItem(alignment: .leading)]) {
+                    LazyVGrid(columns: columns(itemCount: summarizedCategories.tracking.count)) {
                         ForEach(summarizedCategories.tracking) { category in
                             HStack(spacing: 6) {
                                 VStack {
@@ -131,7 +164,7 @@ struct SummaryPane: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                         .padding(.bottom, 12)
-                    LazyVGrid(columns: [GridItem(alignment: .leading), GridItem(alignment: .leading), GridItem(alignment: .leading)]) {
+                    LazyVGrid(columns: columns(itemCount: summarizedCategories.linked.count)) {
                         ForEach(summarizedCategories.linked) { category in
                             HStack(spacing: 6) {
                                 VStack {
@@ -166,8 +199,8 @@ struct SummaryPane: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                         .padding(.bottom, 12)
-                    LazyVGrid(columns: [GridItem(alignment: .leading), GridItem(alignment: .leading), GridItem(alignment: .leading)]) {
-                        ForEach(summarizedCategories.linked) { category in
+                    LazyVGrid(columns: columns(itemCount: summarizedCategories.notLinked.count)) {
+                        ForEach(summarizedCategories.notLinked) { category in
                             HStack(spacing: 6) {
                                 VStack {
                                     Image(systemName: category.icon)
@@ -184,6 +217,14 @@ struct SummaryPane: View {
                 .background(.quinary)
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12), style: .continuous))
             }
+        }
+    }
+
+    private func columns(itemCount: Int) -> [GridItem] {
+        switch itemCount {
+        case 1: [GridItem(alignment: .center)]
+        case 2: [GridItem(alignment: .center), GridItem(alignment: .center)]
+        default: [GridItem(alignment: .leading), GridItem(alignment: .leading), GridItem(alignment: .leading)]
         }
     }
 }
