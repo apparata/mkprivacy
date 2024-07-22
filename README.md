@@ -9,7 +9,7 @@ See the LICENSE file for licensing information.
 
 ## Using `mkprivacy`
 
-The easiest way to install and run `mkprivacy` is by using the `mint` package mangager:
+The easiest way to install and run `mkprivacy` is by using the `mint` package manager:
 
 ```bash
 $ mint run apparata/mkprivacy
