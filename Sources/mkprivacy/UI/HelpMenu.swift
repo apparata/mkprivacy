@@ -30,5 +30,6 @@ struct HelpMenu: View {
                 }
             }
         }
+        .menuIndicator(.hidden)
     }
 }
