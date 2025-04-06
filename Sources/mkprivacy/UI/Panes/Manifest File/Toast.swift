@@ -1,7 +1,3 @@
-//
-//  Copyright © 2024 Bontouch AB. All rights reserved.
-//
-
 import SwiftUI
 
 struct Toast: View {
